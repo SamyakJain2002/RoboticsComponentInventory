@@ -15,8 +15,9 @@ class Component extends StatelessWidget {
       padding: const EdgeInsets.all(5.0),
       child: Card(
         clipBehavior: Clip.antiAliasWithSaveLayer,
-        color: const Color(0xFFF5F5F5),
-        elevation: 5,
+        color: const Color(0xFFFFFFFF),
+
+        elevation: 3,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
@@ -45,9 +46,9 @@ class Component extends StatelessWidget {
                     name,
                     maxLines: 2,
                     style: FlutterFlowTheme.of(context).bodyText1.override(
-                          fontFamily: 'Poppins',
-                          fontSize: 16,
-                        ),
+                      fontFamily: 'Poppins',
+                      fontSize: 16,
+                    ),
                   ),
                 ),
                 Padding(

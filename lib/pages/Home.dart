@@ -36,7 +36,8 @@ class _HomeWidgetState extends State<HomeWidget> {
         imageUrl:
             'https://upload.wikimedia.org/wikipedia/commons/3/38/Arduino_Uno_-_R3.jpg',
         quantity: 5,
-        description: 'angjodnafon'),
+        description:
+            'angjodnafonnsdf;asnbwauifhnioewnfuorngfioranf[iaemfklasdfm/;oewianfaoiNGR;AOINGIOAJWNTI[JQWI[OANFIOANGJKNWAIOPNR[WQJRIFNMDSAKFNKDSNGIOER[QU5T834HJFINEASNIOWNFimciv 2iejvmiwecijriefosanfuphtpenfioann;jngre;npgowparnfupabnrfi vinrwginfwirnfi[wnvminiwrnfiewnfvirnwinwrifipowanksnjnw98qphtfunvajfni[H8IANFKEWNFOIPWQ[AHR[fvrovcdv ewijfiewjfiodsmcldskmvkenefiwejfokd v ko OIGFNQEIOJFIEWNMFV DFION NWIEOnfiwEJRF9-w]rkew4\fdfsnjoidsnafidsabfouifbduisbfiuasdbfipudsbfuisabngudsbgunfudsnfuidsnfospANFiopanfoi[snfiaosnf'),
     ComponentDetails(
         name: 'Arduino',
         imageUrl:
@@ -86,102 +87,95 @@ class _HomeWidgetState extends State<HomeWidget> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          FocusManager.instance.primaryFocus?.unfocus();
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddComponent(),
+            ),
+          );
+        },
+        backgroundColor: Colors.amber,
+        elevation: 8,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 38,
+        ),
+      ),
       body: SafeArea(
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Stack(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                    child: TextFormField(
-                      controller: textController,
-                      autofocus: true,
-                      obscureText: false,
-                      decoration: InputDecoration(
-                        hintText: 'Component',
-                        hintStyle:
-                            FlutterFlowTheme.of(context).bodyText2.override(
-                                  fontFamily: 'Poppins',
-                                  color: Color(0xFFABA3A3),
-                                ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0xFF5688CC),
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(5),
+              const Text("Hi!\nWelcome",
+                  style: TextStyle(
+                    color: Color(0xFF1d1d1d),
+                    fontSize: 24,
+                  )),
+              const SizedBox(
+                height: 25,
+              ),
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                child: TextFormField(
+                  controller: textController,
+                  obscureText: false,
+                  cursorColor: Colors.amber,
+                  decoration: InputDecoration(
+                    hintText: 'Search Component',
+                    hintStyle: FlutterFlowTheme.of(context).bodyText2.override(
+                          fontFamily: 'Poppins',
+                          color: const Color(0xFF1d1d1d),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Color(0xFF5688CC),
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        suffixIcon: const Icon(
-                          Icons.search,
-                          color: Color(0xFF5688CC),
-                          size: 22,
-                        ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Color(0xFF1d1d1d),
+                        width: 2,
                       ),
-                      style: FlutterFlowTheme.of(context).bodyText1,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Color(0xFF1d1d1d),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    suffixIcon: const Icon(
+                      Icons.search,
+                      color: Color(0xFF1d1d1d),
+                      size: 28,
                     ),
                   ),
-                  Expanded(
-                    child: ListView.builder(
-                        itemCount: componentList.length,
-                        shrinkWrap: true,
-                        itemBuilder: ((context, index) {
-                          return GestureDetector(
-                            onTap: (() {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => DetailsWidget(
-                                          details: componentList[index])));
-                            }),
-                            child: Component(
-                                name: componentList[index].name,
-                                imageUrl: componentList[index].imageUrl,
-                                quantity: componentList[index].quantity),
-                          );
-                        })),
-                  )
-                ],
+                  style: FlutterFlowTheme.of(context).bodyText1,
+                ),
               ),
-              Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                    child: InkWell(
-                      onTap: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AddComponent(),
-                          ),
-                        );
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Icon(
-                            Icons.add_circle,
-                            color: Color(0xFF637C9C),
-                            size: 80,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              Expanded(
+                child: ListView.builder(
+                    itemCount: componentList.length,
+                    shrinkWrap: true,
+                    itemBuilder: ((context, index) {
+                      return GestureDetector(
+                        onTap: (() {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DetailsWidget(
+                                      details: componentList[index])));
+                        }),
+                        child: Component(
+                            name: componentList[index].name,
+                            imageUrl: componentList[index].imageUrl,
+                            quantity: componentList[index].quantity),
+                      );
+                    })),
+              )
             ],
           ),
         ),
