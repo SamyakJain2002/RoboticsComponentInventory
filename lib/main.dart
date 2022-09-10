@@ -3,15 +3,16 @@ import 'package:flutter_application_1/pages/Splash.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'package:flutter/services.dart';
-
 import 'flutter_flow/flutter_flow_util.dart';
 import 'flutter_flow/internationalization.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
-
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   FFAppState();
   runApp(MyApp());
 }

@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_1/api/api_calls.dart';
 import 'package:flutter_application_1/models/componentDetails.dart';
 import 'package:flutter_application_1/pages/add.dart';
 import 'package:flutter_application_1/pages/details.dart';
 import 'package:flutter_application_1/widgets/component.dart';
+import 'package:flutter_application_1/widgets/delete_alert_box.dart';
 
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
@@ -18,63 +21,10 @@ class HomeWidget extends StatefulWidget {
 class _HomeWidgetState extends State<HomeWidget> {
   TextEditingController textController;
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  List<ComponentDetails> componentList = [
-    ComponentDetails(
-        name: 'Arduino',
-        imageUrl:
-            'https://upload.wikimedia.org/wikipedia/commons/3/38/Arduino_Uno_-_R3.jpg',
-        quantity: 5,
-        description: 'angjodnafon'),
-    ComponentDetails(
-        name: 'Arduino',
-        imageUrl:
-            'https://upload.wikimedia.org/wikipedia/commons/3/38/Arduino_Uno_-_R3.jpg',
-        quantity: 5,
-        description: 'angjodnafon'),
-    ComponentDetails(
-        name: 'Arduino',
-        imageUrl:
-            'https://upload.wikimedia.org/wikipedia/commons/3/38/Arduino_Uno_-_R3.jpg',
-        quantity: 5,
-        description:
-            'angjodnafonnsdf;asnbwauifhnioewnfuorngfioranf[iaemfklasdfm/;oewianfaoiNGR;AOINGIOAJWNTI[JQWI[OANFIOANGJKNWAIOPNR[WQJRIFNMDSAKFNKDSNGIOER[QU5T834HJFINEASNIOWNFimciv 2iejvmiwecijriefosanfuphtpenfioann;jngre;npgowparnfupabnrfi vinrwginfwirnfi[wnvminiwrnfiewnfvirnwinwrifipowanksnjnw98qphtfunvajfni[H8IANFKEWNFOIPWQ[AHR[fvrovcdv ewijfiewjfiodsmcldskmvkenefiwejfokd v ko OIGFNQEIOJFIEWNMFV DFION NWIEOnfiwEJRF9-w]rkew4\fdfsnjoidsnafidsabfouifbduisbfiuasdbfipudsbfuisabngudsbgunfudsnfuidsnfospANFiopanfoi[snfiaosnf'),
-    ComponentDetails(
-        name: 'Arduino',
-        imageUrl:
-            'https://upload.wikimedia.org/wikipedia/commons/3/38/Arduino_Uno_-_R3.jpg',
-        quantity: 5,
-        description: 'angjodnafon'),
-    ComponentDetails(
-        name: 'Arduino',
-        imageUrl:
-            'https://upload.wikimedia.org/wikipedia/commons/3/38/Arduino_Uno_-_R3.jpg',
-        quantity: 5,
-        description: 'angjodnafon'),
-    ComponentDetails(
-        name: 'Arduino',
-        imageUrl:
-            'https://upload.wikimedia.org/wikipedia/commons/3/38/Arduino_Uno_-_R3.jpg',
-        quantity: 5,
-        description: 'angjodnafon'),
-    ComponentDetails(
-        name: 'Arduino',
-        imageUrl:
-            'https://upload.wikimedia.org/wikipedia/commons/3/38/Arduino_Uno_-_R3.jpg',
-        quantity: 5,
-        description: 'angjodnafon'),
-    ComponentDetails(
-        name: 'Arduino',
-        imageUrl:
-            'https://upload.wikimedia.org/wikipedia/commons/3/38/Arduino_Uno_-_R3.jpg',
-        quantity: 5,
-        description: 'angjodnafon'),
-    ComponentDetails(
-        name: 'Arduino',
-        imageUrl:
-            'https://upload.wikimedia.org/wikipedia/commons/3/38/Arduino_Uno_-_R3.jpg',
-        quantity: 5,
-        description: 'angjodnafon'),
-  ];
+  bool isSearch = false;
+  bool isdeletePressed = false;
+  String name = '';
+  String uid = '';
 
   @override
   void initState() {
@@ -89,6 +39,9 @@ class _HomeWidgetState extends State<HomeWidget> {
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          setState(() {
+            isSearch = false;
+          });
           FocusManager.instance.primaryFocus?.unfocus();
           await Navigator.push(
             context,
@@ -108,78 +61,180 @@ class _HomeWidgetState extends State<HomeWidget> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text("Hi!\nWelcome",
-                  style: TextStyle(
-                    color: Color(0xFF1d1d1d),
-                    fontSize: 24,
-                  )),
-              const SizedBox(
-                height: 25,
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                child: TextFormField(
-                  controller: textController,
-                  obscureText: false,
-                  cursorColor: Colors.amber,
-                  decoration: InputDecoration(
-                    hintText: 'Search Component',
-                    hintStyle: FlutterFlowTheme.of(context).bodyText2.override(
-                          fontFamily: 'Poppins',
-                          color: const Color(0xFF1d1d1d),
-                        ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0xFF1d1d1d),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0xFF1d1d1d),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    suffixIcon: const Icon(
-                      Icons.search,
+          child: Stack(children: [
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text("Hi!\nWelcome",
+                    style: TextStyle(
                       color: Color(0xFF1d1d1d),
-                      size: 28,
-                    ),
-                  ),
-                  style: FlutterFlowTheme.of(context).bodyText1,
+                      fontSize: 24,
+                    )),
+                const SizedBox(
+                  height: 25,
                 ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                    itemCount: componentList.length,
-                    shrinkWrap: true,
-                    itemBuilder: ((context, index) {
-                      return GestureDetector(
-                        onTap: (() {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DetailsWidget(
-                                      details: componentList[index])));
-                        }),
-                        child: Component(
-                            name: componentList[index].name,
-                            imageUrl: componentList[index].imageUrl,
-                            quantity: componentList[index].quantity),
-                      );
-                    })),
-              )
-            ],
-          ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                  child: TextFormField(
+                    // onTap: (() {
+                    //   setState(() {
+                    //     isSearch = true;
+                    //   });
+                    // }),
+                    // onEditingComplete: () {
+                    //   setState(() {
+                    //     isSearch = false;
+                    //   });
+                    // },
+                    // onFieldSubmitted: (val) {
+                    //   setState(() {
+                    //     isSearch = false;
+                    //   });
+                    //},
+                    controller: textController,
+                    obscureText: false,
+                    cursorColor: Colors.amber,
+                    decoration: InputDecoration(
+                      hintText: 'Search Component',
+                      hintStyle:
+                          FlutterFlowTheme.of(context).bodyText2.override(
+                                fontFamily: 'Poppins',
+                                color: const Color(0xFF1d1d1d),
+                              ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0xFF1d1d1d),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0xFF1d1d1d),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      suffixIcon: const Icon(
+                        Icons.search,
+                        color: Color(0xFF1d1d1d),
+                        size: 28,
+                      ),
+                    ),
+                    style: FlutterFlowTheme.of(context).bodyText1,
+                  ),
+                ),
+                Expanded(
+                  child: //(isSearch)
+                      // ? SearchedItems()
+                      //:
+                      StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('components')
+                              .snapshots(),
+                          builder:
+                              (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if (snapshot.data == null) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }
+                            return ListView.builder(
+                                itemCount: snapshot.data.docs.length,
+                                shrinkWrap: true,
+                                itemBuilder: ((context, index) {
+                                  return GestureDetector(
+                                    onTap: (() {
+                                      setState(() {
+                                        isSearch = false;
+                                      });
+
+                                      FocusManager.instance.primaryFocus
+                                          ?.unfocus();
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  DetailsWidget(
+                                                      snapshot: snapshot
+                                                          .data.docs[index])));
+                                    }),
+                                    onLongPress: () {
+                                      Map<String, dynamic> data =
+                                          snapshot.data.docs[index].data();
+                                      name = data['name'];
+                                      uid = data['uid'];
+                                      setState(() {
+                                        isdeletePressed = true;
+                                      });
+                                    },
+                                    child: ComponentItem(
+                                        snapshot.data.docs[index]),
+                                  );
+                                }));
+                          }),
+                )
+              ],
+            ),
+            (isdeletePressed)
+                ? Center(
+                    child: SizedBox(
+                      height: 210,
+                      child: DeleteAlertBox(
+                        name: name,
+                        uid: uid,
+                        onPressedCancel: () {
+                          setState(() {
+                            isdeletePressed = false;
+                          });
+                        },
+                        onPressedDelete: () {
+                          deleteComponentFromDB(uid);
+                          setState(() {
+                            isdeletePressed = false;
+                          });
+                        },
+                      ),
+                    ),
+                  )
+                : Container(),
+          ]),
         ),
       ),
     );
   }
+
+  Widget ComponentItem(DocumentSnapshot snapshot) {
+    Map<String, dynamic> data = snapshot.data();
+    ComponentDetails component = ComponentDetails.fromJson(data);
+    return Component(
+        name: component.name,
+        imageUrl: component.imageUrl,
+        quantity: component.quantity);
+  }
+
+  // Future<Widget> SearchedItems() async{
+  //   List<ComponentDetails> searchedItems = await getComponentsFromDB();
+  //   final Iterable<ComponentDetails>suggestionList = (textController.text.isEmpty)? []:searchedItems.where((element) {return(element.name.toLowerCase().contains(textController.text.toLowerCase()));});
+  //   return ListView.builder(
+  //                       itemCount: suggestionList.length,
+  //                       shrinkWrap: true,
+  //                       itemBuilder: ((context, index) {
+  //                         return GestureDetector(
+  //                             onTap: (() {
+  //                               setState(() {
+  //                                 isSearch = false;
+  //                               });
+  //                               FocusManager.instance.primaryFocus?.unfocus();
+  //                               Navigator.push(
+  //                                   context,
+  //                                   MaterialPageRoute(
+  //                                       builder: (context) => DetailsWidget(
+  //                                           snapshot:
+  //                                               suggestionList.elementAt(index))));
+  //                             }),
+  //                             child: ComponentItem(suggestionList.elementAt(index)));
+  //                       }))
+
+  // }
 }

@@ -1,3 +1,9 @@
+import 'dart:io';
+import 'package:flutter_application_1/utils/utils.dart';
+import 'package:uuid/uuid.dart';
+import 'package:flutter_application_1/api/api_calls.dart';
+import 'package:flutter_application_1/models/componentDetails.dart';
+import 'package:image_picker/image_picker.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +17,22 @@ class AddComponent extends StatefulWidget {
 
 class _AddComponentState extends State<AddComponent> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  bool isLoading = false;
+  String url = 'https://picsum.photos/seed/560/600';
+  TextEditingController name = TextEditingController();
+  TextEditingController description = TextEditingController();
+  TextEditingController quantity = TextEditingController();
+
+  Future<String> pickImage(ImageSource source) async {
+    var image = await ImagePicker().pickImage(source: source);
+    if (image != null) {
+      File selectedImage = File(image.path);
+      selectedImage = await compressImage(selectedImage);
+      return uploadImageToStorage(selectedImage);
+    } else {
+      return url;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,19 +66,36 @@ class _AddComponentState extends State<AddComponent> {
                   Padding(
                     padding:
                         const EdgeInsetsDirectional.fromSTEB(15, 15, 15, 15),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 1.5,
-                      height: MediaQuery.of(context).size.width / 1.5,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: Image.network(
-                        'https://picsum.photos/seed/560/600',
+                    child: GestureDetector(
+                      onTap: () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        //await Permissions.cameraPermissionsGranted()
+                        url = await pickImage(ImageSource.camera);
+                        setState(() {
+                          isLoading = false;
+                        });
+
+                        // : print('no camera permission');
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        height: MediaQuery.of(context).size.width / 1.5,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: (isLoading)
+                            ? const CircularProgressIndicator()
+                            : Image.network(
+                                url,
+                              ),
                       ),
                     ),
                   ),
                   TextFormField(
+                    controller: name,
                     cursorColor: Colors.amber,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
@@ -89,6 +128,7 @@ class _AddComponentState extends State<AddComponent> {
                   ),
                   const SizedBox(height: 30),
                   TextFormField(
+                    controller: quantity,
                     cursorColor: Colors.amber,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
@@ -122,6 +162,7 @@ class _AddComponentState extends State<AddComponent> {
                   ),
                   const SizedBox(height: 30),
                   TextFormField(
+                    controller: description,
                     cursorColor: Colors.amber,
                     keyboardType: TextInputType.multiline,
                     textInputAction: TextInputAction.newline,
@@ -161,6 +202,15 @@ class _AddComponentState extends State<AddComponent> {
                     child: FFButtonWidget(
                       onPressed: () {
                         print('Button pressed ...');
+                        ComponentDetails details = ComponentDetails(
+                            uid: const Uuid().v4(),
+                            name: name.text,
+                            description: description.text,
+                            quantity: int.parse(quantity.text),
+                            imageUrl: url);
+                        print(details.uid);
+                        addComponentToDB(details);
+                        Navigator.pop(context);
                       },
                       text: 'Save',
                       options: FFButtonOptions(

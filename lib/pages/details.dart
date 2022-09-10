@@ -1,3 +1,7 @@
+import 'dart:ffi';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_1/api/api_calls.dart';
 import 'package:flutter_application_1/models/componentDetails.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
@@ -7,8 +11,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DetailsWidget extends StatefulWidget {
-  DetailsWidget({Key key, this.details}) : super(key: key);
-  ComponentDetails details;
+  DetailsWidget({Key key, this.snapshot}) : super(key: key);
+  DocumentSnapshot snapshot;
 
   @override
   _DetailsWidgetState createState() => _DetailsWidgetState();
@@ -17,6 +21,14 @@ class DetailsWidget extends StatefulWidget {
 class _DetailsWidgetState extends State<DetailsWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   ScrollController scrollController = ScrollController();
+  ComponentDetails details;
+
+  @override
+  void initState() {
+    super.initState();
+    Map<String, dynamic> data = widget.snapshot.data();
+    details = ComponentDetails.fromJson(data);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +63,12 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                   shape: BoxShape.circle,
                 ),
                 child: Image.network(
-                  widget.details.imageUrl,
+                  details.imageUrl,
                 ),
               ),
             ),
             Text(
-              widget.details.name,
+              details.name,
               style: FlutterFlowTheme.of(context).bodyText1.override(
                   fontFamily: 'Poppins',
                   fontSize: 24,
@@ -88,7 +100,7 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Text(
-                      widget.details.description,
+                      details.description,
                       style: FlutterFlowTheme.of(context).bodyText1,
                     ),
                   ),
@@ -118,7 +130,7 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                         GestureDetector(
                           onTap: (() {
                             setState(() {
-                              widget.details.quantity++;
+                              details.quantity++;
                             });
                           }),
                           child: Container(
@@ -141,7 +153,7 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                           padding: const EdgeInsetsDirectional.fromSTEB(
                               15, 15, 15, 15),
                           child: Text(
-                            '${widget.details.quantity}',
+                            '${details.quantity}',
                             style: FlutterFlowTheme.of(context)
                                 .bodyText1
                                 .override(
@@ -153,7 +165,7 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              widget.details.quantity--;
+                              details.quantity--;
                             });
                           },
                           child: Container(
@@ -181,6 +193,8 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                     child: FFButtonWidget(
                       onPressed: () {
                         print('Button pressed ...');
+                        updateComponentInDB(details);
+                        Navigator.pop(context);
                       },
                       text: 'Save',
                       options: FFButtonOptions(
