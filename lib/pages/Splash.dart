@@ -34,31 +34,14 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: Color(0xFF637C9C),
+      backgroundColor: const Color(0xFFfafafa),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0x654B39EF),
-                FlutterFlowTheme.of(context).secondaryColor
-              ],
-              stops: [0.125, 1],
-              begin: AlignmentDirectional(0, -1),
-              end: AlignmentDirectional(0, 1),
-            ),
-          ),
-          child: Column(
+        child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Image.asset(
-                'assets/robosoc.png',
-                width: 180,
-                height: 180,
-                fit: BoxFit.cover,
-              ),
+
               Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -67,13 +50,19 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget> {
                     'Robotics Society\nNITH',
                     textAlign: TextAlign.center,
                     style: FlutterFlowTheme.of(context).bodyText1.override(
-                          fontFamily: 'Playfair Display',
-                          fontSize: 42,
+                          fontFamily: 'Poppins',
+                          fontSize: 36,
                           letterSpacing: 1.2,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w400,
                         ),
                   ),
                 ],
+              ),
+              Image.asset(
+                'assets/robosoc.png',
+                width: 200,
+                height: 200,
+                fit: BoxFit.contain,
               ),
               Row(
                 mainAxisSize: MainAxisSize.max,
@@ -83,17 +72,18 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget> {
                     'Inventory',
                     textAlign: TextAlign.center,
                     style: FlutterFlowTheme.of(context).bodyText1.override(
-                          fontFamily: 'Poppins',
-                          fontSize: 25,
-                          letterSpacing: 1.5,
-                        ),
+                      fontFamily: 'Poppins',
+                      fontSize: 24,
+                      letterSpacing: 1.2,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ],
               ),
             ],
           ),
         ),
-      ),
+
     );
   }
 }

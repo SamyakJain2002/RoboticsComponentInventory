@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "693766899636",
+    "project_id": "robotics-inventory-bcc2a",
+    "storage_bucket": "robotics-inventory-bcc2a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:693766899636:android:5e62a1457c99d660ccd4e1",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "693766899636-b9q82uchglv7bqp9t93ed85jl8om6ght.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPlowhPfZdPIo0mVZPgnCCsngKyTTXP3Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "693766899636-b9q82uchglv7bqp9t93ed85jl8om6ght.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
