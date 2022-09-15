@@ -11,6 +11,17 @@ Future<File> compressImage(File imagetoComapress) async {
 
   Im.Image image = Im.decodeImage(imagetoComapress.readAsBytesSync());
   Im.copyResize(image, width: 500, height: 500);
-  return File('$path/img_$random.jpg')
-    ..writeAsBytesSync(Im.encodeJpg(image, quality: 40));
+  File temp = File('$path/img_$random.jpg')
+    ..writeAsBytesSync(Im.encodeJpg(image));
+  final bytes = temp.readAsBytesSync().lengthInBytes;
+  final kb = bytes / 1024;
+  print("kb: $kb");
+
+  return temp
+    ..writeAsBytesSync(Im.encodeJpg(image,
+        quality: (kb >= 400)
+            ? (kb >= 1000)
+                ? 20
+                : 40
+            : 80));
 }

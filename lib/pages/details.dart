@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_1/api/api_calls.dart';
 import 'package:flutter_application_1/models/componentDetails.dart';
@@ -22,6 +23,8 @@ class _DetailsWidgetState extends State<DetailsWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   ScrollController scrollController = ScrollController();
   ComponentDetails details;
+  final String noImageAvailable =
+      'https://www.esm.rochester.edu/uploads/NoPhotoAvailable.jpg';
 
   @override
   void initState() {
@@ -62,8 +65,16 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                 ),
-                child: Image.network(
-                  details.imageUrl,
+                child: CachedNetworkImage(
+                  imageUrl: details.imageUrl,
+                  fit: BoxFit.fill,
+                  placeholder: (context, url) => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  errorWidget: (context, url, error) => Image.network(
+                    noImageAvailable,
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
             ),

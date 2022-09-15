@@ -27,7 +27,9 @@ class _AddComponentState extends State<AddComponent> {
     var image = await ImagePicker().pickImage(source: source);
     if (image != null) {
       File selectedImage = File(image.path);
-      selectedImage = await compressImage(selectedImage);
+      selectedImage = await compressImage(
+        selectedImage,
+      );
       return uploadImageToStorage(selectedImage);
     } else {
       return url;
@@ -68,14 +70,74 @@ class _AddComponentState extends State<AddComponent> {
                         const EdgeInsetsDirectional.fromSTEB(15, 15, 15, 15),
                     child: GestureDetector(
                       onTap: () async {
-                        setState(() {
-                          isLoading = true;
-                        });
                         //await Permissions.cameraPermissionsGranted()
-                        url = await pickImage(ImageSource.camera);
-                        setState(() {
-                          isLoading = false;
-                        });
+                        showModalBottomSheet(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            context: context,
+                            builder: (context) {
+                              return SizedBox(
+                                height: 200,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          IconButton(
+                                              iconSize: 80,
+                                              onPressed: () async {
+                                                setState(() {
+                                                  isLoading = true;
+                                                });
+                                                Navigator.pop(context);
+                                                url = await pickImage(
+                                                    ImageSource.camera);
+                                                setState(() {
+                                                  isLoading = false;
+                                                });
+                                              },
+                                              icon: const Icon(
+                                                Icons.camera,
+                                                color: Colors.amber,
+                                              )),
+                                          const Text(
+                                            'Camera',
+                                            style: TextStyle(fontSize: 20),
+                                          )
+                                        ]),
+                                    Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          IconButton(
+                                              iconSize: 80,
+                                              onPressed: () async {
+                                                setState(() {
+                                                  isLoading = true;
+                                                });
+                                                Navigator.pop(context);
+                                                url = await pickImage(
+                                                    ImageSource.gallery);
+                                                setState(() {
+                                                  isLoading = false;
+                                                });
+                                              },
+                                              icon: const Icon(
+                                                Icons.image,
+                                                color: Colors.amber,
+                                              )),
+                                          const Text(
+                                            'Gallery',
+                                            style: TextStyle(fontSize: 20),
+                                          )
+                                        ]),
+                                  ],
+                                ),
+                              );
+                            });
 
                         // : print('no camera permission');
                       },

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/flutter_flow/flutter_flow_theme.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class Component extends StatelessWidget {
   final String imageUrl;
   final String name;
   final int quantity;
+  final String noImageAvailable =
+      'https://www.esm.rochester.edu/uploads/NoPhotoAvailable.jpg';
 
   const Component({Key key, this.name, this.imageUrl, this.quantity})
       : super(key: key);
@@ -29,8 +32,16 @@ class Component extends StatelessWidget {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                 ),
-                child: Image.network(
-                  imageUrl,
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  fit: BoxFit.fill,
+                  placeholder: (context, url) => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  errorWidget: (context, url, error) => Image.network(
+                    noImageAvailable,
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
             ),

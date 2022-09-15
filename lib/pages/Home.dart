@@ -21,7 +21,6 @@ class HomeWidget extends StatefulWidget {
 class _HomeWidgetState extends State<HomeWidget> {
   TextEditingController textController;
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  bool isSearch = false;
   bool isdeletePressed = false;
   String name = '';
   String uid = '';
@@ -39,9 +38,6 @@ class _HomeWidgetState extends State<HomeWidget> {
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          setState(() {
-            isSearch = false;
-          });
           FocusManager.instance.primaryFocus?.unfocus();
           await Navigator.push(
             context,
@@ -77,21 +73,9 @@ class _HomeWidgetState extends State<HomeWidget> {
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
                   child: TextFormField(
-                    // onTap: (() {
-                    //   setState(() {
-                    //     isSearch = true;
-                    //   });
-                    // }),
-                    // onEditingComplete: () {
-                    //   setState(() {
-                    //     isSearch = false;
-                    //   });
-                    // },
-                    // onFieldSubmitted: (val) {
-                    //   setState(() {
-                    //     isSearch = false;
-                    //   });
-                    //},
+                    onChanged: ((value) {
+                      setState(() {});
+                    }),
                     controller: textController,
                     obscureText: false,
                     cursorColor: Colors.amber,
@@ -126,53 +110,52 @@ class _HomeWidgetState extends State<HomeWidget> {
                   ),
                 ),
                 Expanded(
-                  child: //(isSearch)
-                      // ? SearchedItems()
-                      //:
-                      StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection('components')
-                              .snapshots(),
-                          builder:
-                              (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                            if (snapshot.data == null) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
-                            return ListView.builder(
-                                itemCount: snapshot.data.docs.length,
-                                shrinkWrap: true,
-                                itemBuilder: ((context, index) {
-                                  return GestureDetector(
-                                    onTap: (() {
-                                      setState(() {
-                                        isSearch = false;
-                                      });
-
-                                      FocusManager.instance.primaryFocus
-                                          ?.unfocus();
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  DetailsWidget(
-                                                      snapshot: snapshot
-                                                          .data.docs[index])));
-                                    }),
-                                    onLongPress: () {
-                                      Map<String, dynamic> data =
-                                          snapshot.data.docs[index].data();
-                                      name = data['name'];
-                                      uid = data['uid'];
-                                      setState(() {
-                                        isdeletePressed = true;
-                                      });
-                                    },
-                                    child: ComponentItem(
-                                        snapshot.data.docs[index]),
-                                  );
-                                }));
-                          }),
+                  child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('components')
+                          .snapshots(),
+                      builder:
+                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.data == null) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                        return ListView.builder(
+                            itemCount: snapshot.data.docs.length,
+                            shrinkWrap: true,
+                            itemBuilder: ((context, index) {
+                              Map<String, dynamic> data =
+                                  snapshot.data.docs[index].data();
+                              return (textController.text.isEmpty ||
+                                      data['name']
+                                          .toString()
+                                          .toLowerCase()
+                                          .contains(textController.text
+                                              .toLowerCase()))
+                                  ? GestureDetector(
+                                      onTap: (() {
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    DetailsWidget(
+                                                        snapshot: snapshot.data
+                                                            .docs[index])));
+                                      }),
+                                      onLongPress: () {
+                                        name = data['name'];
+                                        uid = data['uid'];
+                                        setState(() {
+                                          isdeletePressed = true;
+                                        });
+                                      },
+                                      child: ComponentItem(data),
+                                    )
+                                  : Container();
+                            }));
+                      }),
                 )
               ],
             ),
@@ -204,37 +187,11 @@ class _HomeWidgetState extends State<HomeWidget> {
     );
   }
 
-  Widget ComponentItem(DocumentSnapshot snapshot) {
-    Map<String, dynamic> data = snapshot.data();
+  Widget ComponentItem(Map<String, dynamic> data) {
     ComponentDetails component = ComponentDetails.fromJson(data);
     return Component(
         name: component.name,
         imageUrl: component.imageUrl,
         quantity: component.quantity);
   }
-
-  // Future<Widget> SearchedItems() async{
-  //   List<ComponentDetails> searchedItems = await getComponentsFromDB();
-  //   final Iterable<ComponentDetails>suggestionList = (textController.text.isEmpty)? []:searchedItems.where((element) {return(element.name.toLowerCase().contains(textController.text.toLowerCase()));});
-  //   return ListView.builder(
-  //                       itemCount: suggestionList.length,
-  //                       shrinkWrap: true,
-  //                       itemBuilder: ((context, index) {
-  //                         return GestureDetector(
-  //                             onTap: (() {
-  //                               setState(() {
-  //                                 isSearch = false;
-  //                               });
-  //                               FocusManager.instance.primaryFocus?.unfocus();
-  //                               Navigator.push(
-  //                                   context,
-  //                                   MaterialPageRoute(
-  //                                       builder: (context) => DetailsWidget(
-  //                                           snapshot:
-  //                                               suggestionList.elementAt(index))));
-  //                             }),
-  //                             child: ComponentItem(suggestionList.elementAt(index)));
-  //                       }))
-
-  // }
 }
